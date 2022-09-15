@@ -22,6 +22,7 @@ echo "Tools install...!"
 echo "Progress..."
 sleep 2
 
+apt install sudo
 sudo apt update -y
 sudo apt update -y
 sudo apt dist-upgrade -y
