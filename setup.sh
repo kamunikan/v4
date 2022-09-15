@@ -3,50 +3,6 @@ dateFromServer=$(curl -v --insecure --silent https://google.com/ 2>&1 | grep Dat
 biji=`date +"%Y-%m-%d" -d "$dateFromServer"`
 #########################
 
-BURIQ () {
-    curl -sS https://raw.githubusercontent.com/kamunikan/permission/main/ipmini > /root/tmp
-    data=( `cat /root/tmp | grep -E "^### " | awk '{print $2}'` )
-    for user in "${data[@]}"
-    do
-    exp=( `grep -E "^### $user" "/root/tmp" | awk '{print $3}'` )
-    d1=(`date -d "$exp" +%s`)
-    d2=(`date -d "$biji" +%s`)
-    exp2=$(( (d1 - d2) / 86400 ))
-    if [[ "$exp2" -le "0" ]]; then
-    echo $user > /etc/.$user.ini
-    else
-    rm -f  /etc/.$user.ini > /dev/null 2>&1
-    fi
-    done
-    rm -f  /root/tmp
-}
-# https://raw.githubusercontent.com/kamunikan/permission/main/ipmini 
-MYIP=$(curl -sS ipv4.icanhazip.com)
-Name=$(curl -sS https://raw.githubusercontent.com/kamunikan/permission/main/ipmini | grep $MYIP | awk '{print $2}')
-echo $Name > /usr/local/etc/.$Name.ini
-CekOne=$(cat /usr/local/etc/.$Name.ini)
-
-Bloman () {
-if [ -f "/etc/.$Name.ini" ]; then
-CekTwo=$(cat /etc/.$Name.ini)
-    if [ "$CekOne" = "$CekTwo" ]; then
-        res="Expired"
-    fi
-else
-res="Permission Accepted..."
-fi
-}
-
-PERMISSION () {
-    MYIP=$(curl -sS ipv4.icanhazip.com)
-    IZIN=$(curl -sS https://raw.githubusercontent.com/kamunikan/permission/main/ipmini | awk '{print $4}' | grep $MYIP)
-    if [ "$MYIP" = "$IZIN" ]; then
-    Bloman
-    else
-    res="Permission Denied!"
-    fi
-    BURIQ
-}
 
 clear
 red='\e[1;31m'
@@ -78,11 +34,8 @@ echo "$localip $(hostname)" >> /etc/hosts
 fi
 
 mkdir -p /etc/xray
-mkdir -p /etc/v2ray
 touch /etc/xray/domain
-touch /etc/v2ray/domain
 touch /etc/xray/scdomain
-touch /etc/v2ray/scdomain
 
 
 echo -e "[ ${tyblue}NOTES${NC} ] Before we go.. "
@@ -196,26 +149,15 @@ read -rp "Input ur domain : " -e pp
         Then a random domain will be created"
     else
         echo "$pp" > /root/scdomain
+	echo $pp > /root/domain
 	echo "$pp" > /etc/xray/scdomain
 	echo "$pp" > /etc/xray/domain
-	echo "$pp" > /etc/v2ray/domain
-	echo $pp > /root/domain
+
         echo "IP=$pp" > /var/lib/SIJA/ipvps.conf
     fi
     
-#install ssh ovpn
-echo -e "\e[33m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-echo -e "$green      Install SSH / WS               $NC"
-echo -e "\e[33m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-sleep 2
-clear
+
 wget https://raw.githubusercontent.com/kamunikan/v4/main/ssh/ssh-vpn.sh && chmod +x ssh-vpn.sh && ./ssh-vpn.sh
-#Instal Xray
-echo -e "\e[33m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-echo -e "$green          Install XRAY              $NC"
-echo -e "\e[33m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-sleep 2
-clear
 wget https://raw.githubusercontent.com/kamunikan/v4/main/xray/ins-xray.sh && chmod +x ins-xray.sh && ./ins-xray.sh
 wget https://raw.githubusercontent.com/kamunikan/v4/main/sshws/insshws.sh && chmod +x insshws.sh && ./insshws.sh
 clear
